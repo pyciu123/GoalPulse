@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "GoalPulse",
+    "slug": "GoalPulse",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Aplikacja potrzebuje dostępu do mikrofonu, aby nagrywać Twój głos."
+      },
+      "bundleIdentifier": "com.pyciu.GoalPulse"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.pyciu.GoalPulse"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "31719e91-3c9f-4182-8883-e536fe266fd0"
+      }
+    }
+  }
+}
