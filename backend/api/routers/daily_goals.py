@@ -22,6 +22,7 @@ def add_daily_goal(data: DailyGoalRequest):
 		return {
 			"success": True,
 			"goal_id": goal_id,
+			"deadline_hour": deadline_val,
 			"message": f"daily goal for user id: {data.user_id} added"
 		}
 	except Exception as e:
