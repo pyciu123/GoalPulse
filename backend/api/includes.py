@@ -12,12 +12,23 @@ app = FastAPI()
 
 class User(BaseModel):
 	name: str
+     
+class WeeklySubgoals(BaseModel):
+    user_id: str
+    goal_id: str
 
 class DailyGoalRequest(BaseModel):
     user_id: int
     date: str
     content: str
     deadline_hour: str = ""
+    weekly_goal_id: int = None
+
+class WeeklyGoalRequest(BaseModel):
+    user_id: int
+    week_start_date: str
+    content: str
+    deadline_date: str = ""
     
 class ModifyDailyGoal(BaseModel):
     user_id: int

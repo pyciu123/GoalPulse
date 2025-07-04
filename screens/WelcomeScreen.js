@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Text, View, StyleSheet, TextInput, Button, Alert} from 'react-native'
+import {Text, View, StyleSheet, TextInput, Button, Alert, AppRegistry} from 'react-native'
 import { API_URL } from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -21,12 +21,41 @@ export default function WelcomeScreen ({navigation}) {
 				navigation.replace("Home");
 			}
 			else {
-				Alert.alert("Błąd logowania", "Taki urzytkownik nie istnieje")
+				Alert.alert("Błąd logowania", "Taki uzytkownik nie istnieje")
 			}
 		} catch (err) {
 			return ('Bład')
 		}
 	}
+	
+	async function handleRegister () {
+		if (!nick)
+			return;
+		try {
+			const resCheck = await fetch(`${API_URL}/check-if-user-in-db`, {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({name: nick})
+			});
+			const dataCheck = await resCheck.json()
+			if (dataCheck.status == 'success') {
+				Alert.alert("nazwa zajęta")
+				return
+			}
+			const res = await fetch(`${API_URL}/add-user`, {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({name: nick})
+			})
+			const data = await res.json()
+			if (data.status == 'success')
+				Alert.alert("Uzytkownik utowrzony. Mozna się zalogować")
+		}
+		catch (err) {
+			Alert.alert("Bład podczas tworzenia uzytkownika")
+		}
+	}
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.welcomeTitle}>Witaj w PulseGoal</Text>
@@ -43,6 +72,7 @@ export default function WelcomeScreen ({navigation}) {
 					/>
 				<Button
 					title="Zarejestruj"
+					onPress={handleRegister}
 					/>
 			</View>
 		</View>

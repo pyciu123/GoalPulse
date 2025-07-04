@@ -200,7 +200,7 @@ export default function DailyGoals ({navigation}) {
 					<TouchableOpacity
 						style={styles.goalRow}
 						onPress={() => toggleGoalDone(item.id, item.is_done)}	
-						activeOpacity={0.7}
+						activeOpacity={0.1}
 						>
 						<View style={styles.goalRow}>
 							<Text
@@ -210,6 +210,7 @@ export default function DailyGoals ({navigation}) {
 								textDecorationLine: item.is_done ? "line-through" : "none",
 								}}
 							>
+								{item.is_done ? '✔ ' : ''}
 								{item.content}
 								{item.deadline_hour && <Text> (deadline: {item.deadline_hour.slice(0,5)})</Text>}
 							</Text>

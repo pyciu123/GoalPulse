@@ -14,8 +14,8 @@ def add_daily_goal(data: DailyGoalRequest):
 		conn = connect_to_db()
 		cur = conn.cursor()
 		cur.execute(
-			"INSERT INTO daily_goals (user_id, date, deadline_hour, content) VALUES (%s, %s, %s, %s) RETURNING id",
-			(data.user_id, data.date, deadline_val, data.content)	 
+			"INSERT INTO daily_goals (user_id, date, deadline_hour, content, weekly_goal_id) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+			(data.user_id, data.date, deadline_val, data.content, data.weekly_goal_id)	 
 		)
 		goal_id = cur.fetchone()[0]
 		conn.commit()

@@ -3,19 +3,19 @@ from includes import *
 router = APIRouter()
 
 @router.post("/add-weekly-goal")
-def add_weekly_goal(data: DailyGoalRequest):
+def add_weekly_goal(data: WeeklyGoalRequest):
 	conn = None
 	cur = None
-	if data.deadline_hour == "":
+	if data.deadline_date == "":
 		deadline_val = None
 	else:
-		deadline_val = data.deadline_hour
+		deadline_val = data.deadline_date
 	try:
 		conn = connect_to_db()
 		cur = conn.cursor()
 		cur.execute(
-			"INSERT INTO weekly_goals (user_id, date, deadline_date, content) VALUES (%s, %s, %s, %s) RETURNING id",
-			(data.user_id, data.date, deadline_val, data.content)	 
+			"INSERT INTO weekly_goals (user_id, week_start_date, deadline_date, content) VALUES (%s, %s, %s, %s) RETURNING id",
+			(data.user_id, data.week_start_date, deadline_val, data.content)	 
 		)
 		goal_id = cur.fetchone()[0]
 		conn.commit()
@@ -43,6 +43,10 @@ def delete_weekly_goal(data: ModifyDailyGoal):
 		conn = connect_to_db()
 		cur = conn.cursor()
 		cur.execute(
+			"DELETE FROM daily_goals WHERE weekly_goal_id = %s",
+			(data.goal_id,)
+		)
+		cur.execute(
 			"DELETE FROM weekly_goals WHERE id = %s AND user_id = %s RETURNING id",
 			(data.goal_id, data.user_id)
 		)
@@ -58,6 +62,29 @@ def delete_weekly_goal(data: ModifyDailyGoal):
 			"goal_id": deleted[0],
 			"message": f"goal {deleted[0]} from user_id: {data.user_id} deleted"
 		}
+	except Exception as e:
+		return {
+			"success": False,
+			"message": f"Error: {str(e)}"
+		}
+	finally:
+		if cur:
+			cur.close()
+		if conn:
+			conn.close()
+
+@router.get("/get-weekly-goal-subgoals")
+def get_subgoals(user_id: int, goal_id: int):
+	conn = None
+	cur = None
+	try:
+		conn = connect_to_db()
+		cur = conn.cursor()
+		cur.execute(
+			"SELECT * FROM daily_goals WHERE user_id = %s and weekly_goal_id = %s",
+			(user_id, goal_id)
+		)
+		return fetch_all_as_dict(cur)
 	except Exception as e:
 		return {
 			"success": False,
@@ -214,7 +241,7 @@ def get_weekly_goals(user_id: int, date: str):
 		conn = connect_to_db()
 		cur = conn.cursor()
 		cur.execute(
-			"SELECT * FROM weekly_goals WHERE user_id = %s AND date = %s",
+			"SELECT * FROM weekly_goals WHERE user_id = %s AND week_start_date = %s",
 			(user_id, date)
 		)
 		return fetch_all_as_dict(cur)
